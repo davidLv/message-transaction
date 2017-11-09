@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.xjd.transaction.message.message.KafkaMessage;
@@ -19,7 +20,9 @@ import com.xjd.transaction.message.sender.kafka.KafkaSenderSpi;
  */
 public class DefaultSenderTest {
 	protected static Producer<String, String> producer;
-	static {
+
+	@Before
+	public void setUp() throws Exception {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "service4:9191,server4:9192");
 		props.put("acks", "all");
@@ -31,7 +34,6 @@ public class DefaultSenderTest {
 		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		producer = new KafkaProducer<>(props);
 	}
-
 
 	@Test
 	public void send() throws Exception {
@@ -86,10 +88,11 @@ public class DefaultSenderTest {
 		}, scheduledExecutorService, 4000L);
 
 		sender.send(new KafkaMessage("111", "111", null).setTopic("test").setPartition("xxx", true));
-		sender.send(new KafkaMessage("222", "222", null).setTopic("test").setPartition("xxx", false));
-		sender.send(new KafkaMessage("333", "333", null).setTopic("test").setPartition("xxx", false));
+		sender.send(new KafkaMessage("222", "222", null).setTopic("foo").setPartition("xxx", false));
+		sender.send(new KafkaMessage("333", "333", null).setTopic("foo").setPartition("xxx", false));
+		sender.send(new KafkaMessage("444", "444", null).setTopic("foo").setPartition("xxx", false));
 
-		Thread.sleep(20000L);
+		Thread.sleep(8000L);
 
 		producer.close();
 		scheduledExecutorService.shutdown();

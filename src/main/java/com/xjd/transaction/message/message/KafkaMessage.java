@@ -15,9 +15,11 @@ import com.xjd.utils.basic.JsonUtils;
  */
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"timestamp", "key", "value"})
-@JsonIgnoreProperties({"topic", "partitionKey", "partitionOrdered", "orderTimeoutInMillis", "ordered", "orderKey"})
+@JsonPropertyOrder({"timestamp", "key", "value", "partitionOrdered", "topic", "partitionKey"})
+@JsonIgnoreProperties(value = {"orderKey", "ordered", "orderTimeoutInMillis"}, ignoreUnknown = true)
 public class KafkaMessage implements Message.OrderedMessage<String> {
+	public static final long version = 1;
+
 	protected String key;
 	protected String value;
 	protected long timestamp;
